@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+*.egg-info/
+
+# Electron build output
+dist/
+out/
+*.asar
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Large data files (>100 MB GitHub limit)
+data/*.ply
+
+# Optional: ignore video assets if they are large
+# asset/*.mp4

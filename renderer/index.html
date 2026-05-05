@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>War Room Big Screen</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "../node_modules/three/build/three.module.js",
+      "three/addons/": "../node_modules/three/examples/jsm/",
+      "@mkkellogg/gaussian-splats-3d": "../node_modules/@mkkellogg/gaussian-splats-3d/build/gaussian-splats-3d.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Three.js canvas for 3DGS room + Crazyflie drone overlay -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- Drone camera feed — live MJPEG stream from ESP32-S3-AI-Deck -->
+  <div id="drone-feed">
+    <img src="http://localhost:8082/stream" alt="Crazyflie Camera" />
+  </div>
+
+  <!-- Left Control Pad: UP / DOWN / TURN LEFT / TURN RIGHT -->
+  <div class="control-pad" id="left-pad">
+    <div class="pad-circle">
+      <div class="quadrant top" data-command="up">
+        <span class="label">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="19 12 12 5 5 12"/><line x1="6" y1="20" x2="18" y2="20"/></svg>
+        </span>
+      </div>
+      <div class="quadrant left" data-command="turn_left">
+        <span class="label">
+          <svg viewBox="0 0 24 24"><path d="M2.5 12a9.5 9.5 0 1 0 2.8-6.7"/><polyline points="2 18 2 12 8 12"/></svg>
+        </span>
+      </div>
+      <div class="quadrant right" data-command="turn_right">
+        <span class="label">
+          <svg viewBox="0 0 24 24"><path d="M21.5 12a9.5 9.5 0 1 1-2.8-6.7"/><polyline points="22 18 22 12 16 12"/></svg>
+        </span>
+      </div>
+      <div class="quadrant bottom" data-command="down">
+        <span class="label">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/><line x1="6" y1="20" x2="18" y2="20"/></svg>
+        </span>
+      </div>
+      <div class="center-dot"></div>
+    </div>
+  </div>
+
+  <!-- Right Control Pad: FORWARD / BACKWARD / SLIDE LEFT / SLIDE RIGHT -->
+  <div class="control-pad" id="right-pad">
+    <div class="pad-circle">
+      <div class="quadrant top" data-command="forward">
+        <span class="label">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="19 12 12 5 5 12"/></svg>
+        </span>
+      </div>
+      <div class="quadrant left" data-command="slide_left">
+        <span class="label">
+          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </span>
+      </div>
+      <div class="quadrant right" data-command="slide_right">
+        <span class="label">
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+      <div class="quadrant bottom" data-command="backward">
+        <span class="label">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/></svg>
+        </span>
+      </div>
+      <div class="center-dot"></div>
+    </div>
+  </div>
+
+  <!-- Loading progress bar -->
+  <div id="loading-bar-container">
+    <div id="loading-label">Loading 3D Scene...</div>
+    <div id="loading-bar-track">
+      <div id="loading-bar-fill"></div>
+    </div>
+    <div id="loading-percent">0%</div>
+  </div>
+
+  <!-- Controls help overlay -->
+  <div id="controls-help">
+    <span class='ctrl-key'>WASD</span>: Walk &nbsp;|&nbsp;
+    <span class='ctrl-key'>Mouse</span>: Look &nbsp;|&nbsp;
+    <span class='ctrl-key'>Click</span>: Lock mouse &nbsp;|&nbsp;
+    <span class='ctrl-key'>C</span>: Toggle Collision
+  </div>
+
+  <script src="renderer.js"></script>
+  <script type="module" src="three_scene.js"></script>
+</body>
+</html>

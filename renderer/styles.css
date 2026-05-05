@@ -1,0 +1,253 @@
+/* Reset and fullscreen setup */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+}
+
+/* Three.js canvas — now the sole fullscreen renderer */
+#three-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  cursor: crosshair;
+}
+
+/* Drone feed — live stream from ESP32-S3-AI-Deck */
+#drone-feed {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 25%;
+  min-width: 200px;
+  max-width: 400px;
+  height: auto;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  z-index: 10;
+}
+
+#drone-feed img {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 140px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #111;
+}
+
+/* Control pad positioning */
+.control-pad {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+}
+
+#left-pad {
+  left: 5%;
+}
+
+#right-pad {
+  right: 5%;
+}
+
+/* Circular pad container */
+.pad-circle {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(2px);
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pad-circle:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Quadrants inside the circle */
+.quadrant {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.quadrant:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.quadrant.active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.quadrant.top {
+  top: 0;
+  left: 25%;
+  border-radius: 999px 999px 0 0;
+}
+
+.quadrant.bottom {
+  bottom: 0;
+  left: 25%;
+  border-radius: 0 0 999px 999px;
+}
+
+.quadrant.left {
+  top: 25%;
+  left: 0;
+  border-radius: 999px 0 0 999px;
+}
+
+.quadrant.right {
+  top: 25%;
+  right: 0;
+  border-radius: 0 999px 999px 0;
+}
+
+/* Labels / Icons */
+.label {
+  color: rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label svg {
+  width: 22.5%;
+  height: 22.5%;
+  min-width: 24px;
+  min-height: 24px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.quadrant.top .label {
+  align-self: flex-start;
+  margin-top: 18.75%;
+}
+
+.quadrant.bottom .label {
+  align-self: flex-end;
+  margin-bottom: 18.75%;
+}
+
+.quadrant.left .label {
+  margin-left: -37.5%;
+}
+
+.quadrant.right .label {
+  margin-right: -37.5%;
+}
+
+/* Center dot for visual reference */
+.center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 37.5%;
+  height: 37.5%;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* Controls help overlay */
+#controls-help {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  line-height: 1.5;
+  pointer-events: none;
+  z-index: 15;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.ctrl-key {
+  color: orange;
+  font-weight: bold;
+}
+
+/* Loading progress bar */
+#loading-bar-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+#loading-bar-container.hidden {
+  opacity: 0;
+}
+
+#loading-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+#loading-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+#loading-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #ff9800, #ffc107);
+  border-radius: 4px;
+  transition: width 0.2s ease;
+}
+
+#loading-percent {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
